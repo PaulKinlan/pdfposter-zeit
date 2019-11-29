@@ -1,0 +1,16 @@
+{
+  "name": "pdf-poster",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "formidable": "^1.2.1",
+    "now": "^16.6.0",
+    "uuid": "^3.3.3"
+  },
+  "scripts": {
+    "build": "./build.sh"
+  }
+}
