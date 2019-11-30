@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/poster.js": {
+      "includeFiles": "bin/**"
+    }
+  }
+}

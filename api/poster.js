@@ -2,6 +2,7 @@ const {spawn} = require('child_process');
 const formidable = require('formidable');
 const uuid = require('uuid/v3');
 const {readFileSync} = require('fs');
+const { join } = require('path');
 
 module.exports = (req, res) => {
   const output_UUID = uuid('http://example.com/hello', uuid.URL); 
@@ -19,7 +20,8 @@ module.exports = (req, res) => {
       .on('end', function() {
         res.writeHead(200, {'content-type': 'image/pdf', 'content-dispostion': `name=${output_UUID}`})
      
-        const ls = spawn('/usr/local/bin/pdfposter', ['-s1', file.path, `/tmp/${output_UUID}`]);
+        const pdfinfo = join(__dirname, 'bin', 'pdfinfo')
+        const ls = spawn(pdfinfo, [file.path]);
 
         ls.stdout.on('data', (data) => {
           console.log(`stdout: ${data}`);
@@ -32,9 +34,7 @@ module.exports = (req, res) => {
         ls.on('close', (code) => {
           console.log(`child process exited with code ${code}`);
           res.send(readFileSync(`/tmp/${output_UUID}`))
-        });
-
-       
+        });       
       });
     form.parse(req); 
 };
