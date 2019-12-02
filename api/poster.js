@@ -18,22 +18,28 @@ module.exports = (req, res) => {
         }
       })
       .on('end', function() {
-        res.writeHead(200, {'content-type': 'image/pdf', 'content-dispostion': `name=${output_UUID}`})
+        res.writeHead(200, {'content-type': 'text/html', 'content-dispostion': `name=${output_UUID}`})
      
-        const pdfinfo = join(__dirname, 'bin', 'pdfinfo')
-        const ls = spawn(pdfinfo, [file.path]);
+        const pdfinfo = join(__dirname, 'bin', 'pdftohtml');
+        console.log('LD_PATH', `${__dirname}/bin:${process.env.LD_LIBRARY_PATH}`)
+        const pdf = spawn(pdfinfo, ['-s', file.path, `/tmp/${output_UUID}.html`], {
+          "env": {
+            "LD_LIBRARY_PATH": `${__dirname}/bin`
+          } 
+        });
 
-        ls.stdout.on('data', (data) => {
+        pdf.stdout.on('data', (data) => {
           console.log(`stdout: ${data}`);
         });
 
-        ls.stderr.on('data', (data) => {
+        pdf.stderr.on('data', (data) => {
           console.error(`stderr: ${data}`);
         });
 
-        ls.on('close', (code) => {
-          console.log(`child process exited with code ${code}`);
-          res.send(readFileSync(`/tmp/${output_UUID}`))
+        pdf.on('close', (code, signal) => {
+          console.log(`child process exited with code ${code} ${signal}`);
+          res.write(readFileSync(`/tmp/${output_UUID}.html`));
+          res.end();
         });       
       });
     form.parse(req); 
