@@ -10,6 +10,6 @@ exit_on_error() {
 }
 
 #yum install -y pdfposter
-pip install pdftools.pdfposter
-which pdfposter
-pdfposter --help 
+#pip install pdftools.pdfposter
+#which pdfposter
+#pdfposter --help 
